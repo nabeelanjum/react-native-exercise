@@ -9,6 +9,7 @@ import {
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Color, Font } from './constants';
+import TimePicker from './components/TimePicker';
 
 const Button = ({ onPress, children, ...props }) => {
   return (
@@ -36,7 +37,7 @@ class App extends React.Component {
             </Text>
           </View>
           <View style={Styles.Body}>
-            <Text>Your Component Here</Text>
+            <TimePicker />
           </View>
           <View style={Styles.Footer}>
             <Button style={Styles.Button}>Next</Button>
@@ -61,8 +62,6 @@ const Styles = StyleSheet.create({
   Body: {
     height: 248,
     backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   HeaderText: {
     ...Font.regular,
