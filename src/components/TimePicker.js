@@ -6,6 +6,20 @@ import {
   View,
 } from 'react-native';
 import moment from 'moment';
+import { Color } from '../constants';
+
+const SelectionBar = () => (
+  <View style={{
+    position: 'absolute',
+    top: '48%',
+    left: 10,
+    right: 10,
+    borderWidth: 1,
+    borderColor: Color.action,
+    height: 40,
+    borderRadius: 4,
+  }} />
+);
 
 class TimePicker extends React.PureComponent {
 
@@ -22,6 +36,7 @@ class TimePicker extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
+        <SelectionBar />
         <ScrollView
           contentContainerStyle={styles.daysScrollContainer}
           showsVerticalScrollIndicator={false}
