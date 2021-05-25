@@ -9,17 +9,7 @@ import moment from 'moment';
 import { Color } from '../constants';
 
 const SelectionBar = () => (
-  <View style={{
-    position: 'absolute',
-    top: '48%',
-    left: 10,
-    right: 10,
-    borderWidth: 1,
-    borderColor: Color.action,
-    height: 40,
-    borderRadius: 4,
-    justifyContent: 'center'
-  }}>
+  <View style={styles.selectionBar}>
     <View style={{ marginLeft: '34%', height: 20, width: 1, backgroundColor: Color.primaryLight }} />
   </View>
 );
@@ -55,9 +45,10 @@ class TimePicker extends React.PureComponent {
           contentContainerStyle={styles.daysScrollContainer}
           showsVerticalScrollIndicator={false}
           snapToOffsets={[60, 120, 180, 240, 300, 360]}
+          decelerationRate={'fast'}
         >
-          {this.dates.map((date) =>
-            <View style={{ ...styles.item, height: 60, alignItems: 'flex-end' }}>
+          {this.dates.map((date, i) =>
+            <View key={i.toString()} style={{ ...styles.item, height: 60, alignItems: 'flex-end' }}>
               <Text style={{ ...styles.text, fontWeight: 'bold' }}>{date}</Text>
             </View>
           )}
@@ -67,9 +58,10 @@ class TimePicker extends React.PureComponent {
           contentContainerStyle={styles.timesScrollContainer}
           showsVerticalScrollIndicator={false}
           snapToOffsets={[40, 80, 120, 160, 200, 240]}
+          decelerationRate={'fast'}
         >
-          {this.times.map((time) =>
-            <View style={{ ...styles.item, height: 40, alignItems: 'flex-start' }}>
+          {this.times.map((time, i) =>
+            <View key={i.toString()} style={{ ...styles.item, height: 40, alignItems: 'flex-start' }}>
               <Text style={styles.text}>{time}</Text>
             </View>
           )}
@@ -99,6 +91,17 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff'
+  },
+  selectionBar: {
+    position: 'absolute',
+    top: '48%',
+    left: 10,
+    right: 10,
+    borderWidth: 1,
+    borderColor: Color.action,
+    height: 40,
+    borderRadius: 4,
+    justifyContent: 'center'
   }
 })
 
