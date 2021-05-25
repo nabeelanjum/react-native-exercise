@@ -61,7 +61,7 @@ const Styles = StyleSheet.create({
   Footer: {},
   Body: {
     height: 248,
-    backgroundColor: 'red',
+    backgroundColor: Color.primaryDarker,
   },
   HeaderText: {
     ...Font.regular,
