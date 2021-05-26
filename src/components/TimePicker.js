@@ -28,7 +28,6 @@ class TimePicker extends React.PureComponent {
 
   state = {
     hoursArray: [],
-    days: [],
   }
 
   componentDidMount = () => {
@@ -37,13 +36,13 @@ class TimePicker extends React.PureComponent {
     // if time is already past 9pm then remove 'today' from the days array //
     if (hourOfDay >= 21) {
       days.splice(0, 1);
-      this.setState({ hoursArray: workingHours, days });
+      this.setState({ hoursArray: workingHours });
     }
 
     // Remove those time values from todayWorkingHours array that are already passed //
     if (hourOfDay > 8 && hourOfDay < 21) {
       todayWorkingHours.splice(1, (hourOfDay - 7));
-      this.setState({ hoursArray: todayWorkingHours, days });
+      this.setState({ hoursArray: todayWorkingHours });
     }
 
   }
