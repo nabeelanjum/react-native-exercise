@@ -7,7 +7,9 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import { Color } from '../constants';
+import { getSchedulingDays, getWorkingHours } from '../utils/dateTime';
 
+// A centered Selection Bar on top of date/time picker //
 const SelectionBar = () => (
   <View style={styles.selectionBar}>
     <View style={{ marginLeft: '34%', height: 20, width: 1, backgroundColor: Color.primaryLight }} />
@@ -16,27 +18,51 @@ const SelectionBar = () => (
 
 class TimePicker extends React.PureComponent {
 
-  dates = [
-    'Today',
-    'Tomorrow',
-    moment().add(2, 'days').format('ddd MMM D'),
-    moment().add(3, 'days').format('ddd MMM D'),
-    moment().add(4, 'days').format('ddd MMM D'),
-    moment().add(5, 'days').format('ddd MMM D'),
-    moment().add(6, 'days').format('ddd MMM D'),
+  hourOfDay = moment().hour();
+  days = getSchedulingDays();
+  workingHours = getWorkingHours();
+  todayWorkingHours = [
+    'within 1 hour',
+    ...this.workingHours,
   ];
 
-  times = [
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-    'between 7 pm - 8 pm',
-  ];
+  state = {
+    hoursArray: [],
+    days: [],
+  }
+
+  componentDidMount = () => {
+    const { hourOfDay, days, todayWorkingHours, workingHours } = this;
+
+    // if time is already past 9pm then remove 'today' from the days array //
+    if (hourOfDay >= 21) {
+      days.splice(0, 1);
+      this.setState({ hoursArray: workingHours, days });
+    }
+
+    // Remove those time values from todayWorkingHours array that are already passed //
+    if (hourOfDay > 8 && hourOfDay < 21) {
+      todayWorkingHours.splice(1, (hourOfDay - 7));
+      this.setState({ hoursArray: todayWorkingHours, days });
+    }
+
+  }
+
+  handleDayChange = (e) => {
+    const { todayWorkingHours, workingHours, hourOfDay } = this;
+
+    if (e.contentOffset.y < 40 && hourOfDay < 22) {
+      this.setState({ hoursArray: todayWorkingHours });
+    } else {
+      this.setState({ hoursArray: workingHours });
+    }
+  }
 
   render() {
+
+    const { days } = this;
+    const { hoursArray } = this.state;
+
     return (
       <View style={styles.container}>
         <SelectionBar />
@@ -44,23 +70,26 @@ class TimePicker extends React.PureComponent {
           style={{ width: '35%' }}
           contentContainerStyle={styles.daysScrollContainer}
           showsVerticalScrollIndicator={false}
-          snapToOffsets={[60, 120, 180, 240, 300, 360]}
+          snapToInterval={60}
           decelerationRate={'fast'}
+          onMomentumScrollEnd={(e) => this.handleDayChange(e.nativeEvent)}
         >
-          {this.dates.map((date, i) =>
+          {days.map((day, i) =>
             <View key={i.toString()} style={{ ...styles.item, height: 60, alignItems: 'flex-end' }}>
-              <Text style={{ ...styles.text, fontWeight: 'bold' }}>{date}</Text>
+              <Text style={{ ...styles.text, fontWeight: 'bold' }}>{day}</Text>
             </View>
           )}
         </ScrollView>
         <ScrollView
+          ref={(ref) => this._timeSelector = ref}
           style={{ width: '65%' }}
           contentContainerStyle={styles.timesScrollContainer}
           showsVerticalScrollIndicator={false}
-          snapToOffsets={[40, 80, 120, 160, 200, 240]}
+          snapToInterval={40}
           decelerationRate={'fast'}
+          onContentSizeChange={() => this._timeSelector.scrollTo({ y: 0 })}
         >
-          {this.times.map((time, i) =>
+          {hoursArray.map((time, i) =>
             <View key={i.toString()} style={{ ...styles.item, height: 40, alignItems: 'flex-start' }}>
               <Text style={styles.text}>{time}</Text>
             </View>
@@ -95,14 +124,14 @@ const styles = StyleSheet.create({
   selectionBar: {
     position: 'absolute',
     top: '48%',
-    left: 10,
-    right: 10,
+    left: 12,
+    right: 12,
     borderWidth: 1,
     borderColor: Color.action,
     height: 40,
     borderRadius: 4,
     justifyContent: 'center'
   }
-})
+});
 
 export default TimePicker;
