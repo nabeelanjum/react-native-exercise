@@ -25,3 +25,6 @@ export const getWorkingHours = () => {
     'between 8 pm - 9 pm',
   ];
 }
+
+export const dayScrollInterval = 60;
+export const timeScrollInterval = 40;

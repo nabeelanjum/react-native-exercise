@@ -3,11 +3,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import moment from 'moment';
 import { Color } from '../constants';
-import { getSchedulingDays, getWorkingHours } from '../utils/dateTime';
+import { dayScrollInterval, getSchedulingDays, getWorkingHours, timeScrollInterval } from '../utils/dateTime';
 
 // A centered Selection Bar on top of date/time picker //
 const SelectionBar = () => (
@@ -33,27 +34,27 @@ class TimePicker extends React.PureComponent {
   componentDidMount = () => {
     const { hourOfDay, days, todayWorkingHours, workingHours } = this;
 
-    // if time is already past 9pm then remove 'today' from the days array //
-    if (hourOfDay >= 21) {
-      days.splice(0, 1);
-      this.setState({ hoursArray: workingHours });
-    }
-
-    // Remove those time values from todayWorkingHours array that are already passed //
-    if (hourOfDay > 8 && hourOfDay < 21) {
+    if (hourOfDay >= 8 && hourOfDay < 21) {
+      // Remove those time slots from todayWorkingHours array that are already passed //
       todayWorkingHours.splice(1, (hourOfDay - 7));
       this.setState({ hoursArray: todayWorkingHours });
+      return;
+    } else if (hourOfDay >= 21) {
+      // if time is already past 9pm then remove 'today' from days array //
+      days.splice(0, 1);
     }
-
+    this.setState({ hoursArray: workingHours });
   }
 
   handleDayChange = (e) => {
     const { todayWorkingHours, workingHours, hourOfDay } = this;
 
-    if (e.contentOffset.y < 40 && hourOfDay < 22) {
-      this.setState({ hoursArray: todayWorkingHours });
-    } else {
-      this.setState({ hoursArray: workingHours });
+    if (e.contentOffset.y < timeScrollInterval && hourOfDay >= 8 && hourOfDay < 21) {
+      this._timeSelector.scrollTo({ y: 0 });
+      setTimeout(() => this.setState({ hoursArray: todayWorkingHours }), 100);
+    } else if (this.state.hoursArray !== workingHours) {
+      this._timeSelector.scrollTo({ y: 0 });
+      setTimeout(() => this.setState({ hoursArray: workingHours }), 100);
     }
   }
 
@@ -66,17 +67,19 @@ class TimePicker extends React.PureComponent {
       <View style={styles.container}>
         <SelectionBar />
         <ScrollView
+          ref={(ref) => this._daySelector = ref}
           style={{ width: '35%' }}
           contentContainerStyle={styles.daysScrollContainer}
           showsVerticalScrollIndicator={false}
-          snapToInterval={60}
+          snapToInterval={dayScrollInterval}
           decelerationRate={'fast'}
+          scrollsToTop={false}
           onMomentumScrollEnd={(e) => this.handleDayChange(e.nativeEvent)}
         >
           {days.map((day, i) =>
-            <View key={i.toString()} style={{ ...styles.item, height: 60, alignItems: 'flex-end' }}>
+            <TouchableOpacity onPress={() => this._daySelector.scrollTo({ y: i * dayScrollInterval })} key={i.toString()} style={{ ...styles.item, height: dayScrollInterval, alignItems: 'flex-end' }}>
               <Text style={{ ...styles.text, fontWeight: 'bold' }}>{day}</Text>
-            </View>
+            </TouchableOpacity>
           )}
         </ScrollView>
         <ScrollView
@@ -84,14 +87,14 @@ class TimePicker extends React.PureComponent {
           style={{ width: '65%' }}
           contentContainerStyle={styles.timesScrollContainer}
           showsVerticalScrollIndicator={false}
-          snapToInterval={40}
+          snapToInterval={timeScrollInterval}
           decelerationRate={'fast'}
-          onContentSizeChange={() => this._timeSelector.scrollTo({ y: 0 })}
+          scrollsToTop={false}
         >
           {hoursArray.map((time, i) =>
-            <View key={i.toString()} style={{ ...styles.item, height: 40, alignItems: 'flex-start' }}>
+            <TouchableOpacity onPress={() => this._timeSelector.scrollTo({ y: i * timeScrollInterval })} key={i.toString()} style={{ ...styles.item, height: timeScrollInterval, alignItems: 'flex-start' }}>
               <Text style={styles.text}>{time}</Text>
-            </View>
+            </TouchableOpacity>
           )}
         </ScrollView>
       </View>
