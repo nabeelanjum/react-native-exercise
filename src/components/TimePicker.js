@@ -77,7 +77,11 @@ class TimePicker extends React.PureComponent {
           onMomentumScrollEnd={(e) => this.handleDayChange(e.nativeEvent)}
         >
           {days.map((day, i) =>
-            <TouchableOpacity onPress={() => this._daySelector.scrollTo({ y: i * dayScrollInterval })} key={i.toString()} style={{ ...styles.item, height: dayScrollInterval, alignItems: 'flex-end' }}>
+            <TouchableOpacity
+              key={i.toString()}
+              onPress={() => this._daySelector.scrollTo({ y: i * dayScrollInterval })}
+              style={{ ...styles.item, height: dayScrollInterval, alignItems: 'flex-end' }}
+            >
               <Text style={{ ...styles.text, fontWeight: 'bold' }}>{day}</Text>
             </TouchableOpacity>
           )}
@@ -92,7 +96,11 @@ class TimePicker extends React.PureComponent {
           scrollsToTop={false}
         >
           {hoursArray.map((time, i) =>
-            <TouchableOpacity onPress={() => this._timeSelector.scrollTo({ y: i * timeScrollInterval })} key={i.toString()} style={{ ...styles.item, height: timeScrollInterval, alignItems: 'flex-start' }}>
+            <TouchableOpacity
+              key={i.toString()}
+              onPress={() => this._timeSelector.scrollTo({ y: i * timeScrollInterval })}
+              style={{ ...styles.item, height: timeScrollInterval, alignItems: 'flex-start' }}
+            >
               <Text style={styles.text}>{time}</Text>
             </TouchableOpacity>
           )}
