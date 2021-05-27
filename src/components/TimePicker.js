@@ -50,9 +50,11 @@ class TimePicker extends React.PureComponent {
     const { todayWorkingHours, workingHours, hourOfDay } = this;
 
     if (e.contentOffset.y < timeScrollInterval && hourOfDay >= 8 && hourOfDay < 21) {
+      // If 'today' is selected then change the hours array to todayWorkingHours and scroll it up //
       this._timeSelector.scrollTo({ y: 0 });
       setTimeout(() => this.setState({ hoursArray: todayWorkingHours }), 100);
     } else if (this.state.hoursArray !== workingHours) {
+      // If day is changed from 'today' to another day then change the hours array to workingHours and scroll it up //
       this._timeSelector.scrollTo({ y: 0 });
       setTimeout(() => this.setState({ hoursArray: workingHours }), 100);
     }
@@ -66,6 +68,7 @@ class TimePicker extends React.PureComponent {
     return (
       <View style={styles.container}>
         <SelectionBar />
+
         <ScrollView
           ref={(ref) => this._daySelector = ref}
           style={{ width: '35%' }}
@@ -86,6 +89,7 @@ class TimePicker extends React.PureComponent {
             </TouchableOpacity>
           )}
         </ScrollView>
+
         <ScrollView
           ref={(ref) => this._timeSelector = ref}
           style={{ width: '65%' }}
