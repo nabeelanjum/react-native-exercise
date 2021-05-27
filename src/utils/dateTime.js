@@ -1,5 +1,8 @@
 import moment from 'moment';
 
+export const dayScrollInterval = 60;
+export const timeScrollInterval = 40;
+
 export const getSchedulingDays = () => {
   const days = ['Today', 'Tomorrow'];
   for (i = 2; i <= 30; i++) {
@@ -25,6 +28,3 @@ export const getWorkingHours = () => {
     'between 8 pm - 9 pm',
   ];
 }
-
-export const dayScrollInterval = 60;
-export const timeScrollInterval = 40;
